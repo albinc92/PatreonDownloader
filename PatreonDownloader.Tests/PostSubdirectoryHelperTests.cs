@@ -58,5 +58,41 @@ namespace PatreonDownloader.Tests
 
             Assert.Equal("[123456] 2020-07-07 No Title", PostSubdirectoryHelper.CreateNameFromPattern(crawledUrl, "[%PostId%] %PublishedAt% %PostTitle%", 100));
         }
+
+        [Fact]
+        public async Task CreateNameFromPattern_PostTitleHasTrailingSpaces_TrailingSpacesAreRemoved()
+        {
+            PatreonCrawledUrl crawledUrl = new PatreonCrawledUrl
+            {
+                PostId = "123456",
+                Title = "Princess Jasmine ",
+                PublishedAt = DateTime.Parse("07.07.2020 20:00:15"),
+                Url = "http://google.com",
+                Filename = "test.png",
+                UrlType = PatreonCrawledUrlType.PostMedia
+            };
+
+            string result = PostSubdirectoryHelper.CreateNameFromPattern(crawledUrl, "[%PostId%] %PublishedAt% %PostTitle%", 100);
+            Assert.Equal("[123456] 2020-07-07 Princess Jasmine", result);
+            Assert.False(result.EndsWith(" "), "Result should not end with a space");
+        }
+
+        [Fact]
+        public async Task CreateNameFromPattern_PostTitleHasTrailingDotsAndSpaces_TrailingCharsAreRemoved()
+        {
+            PatreonCrawledUrl crawledUrl = new PatreonCrawledUrl
+            {
+                PostId = "123456",
+                Title = "Test User . ",
+                PublishedAt = DateTime.Parse("07.07.2020 20:00:15"),
+                Url = "http://google.com",
+                Filename = "test.png",
+                UrlType = PatreonCrawledUrlType.PostMedia
+            };
+
+            string result = PostSubdirectoryHelper.CreateNameFromPattern(crawledUrl, "[%PostId%] %PublishedAt% %PostTitle%", 100);
+            Assert.Equal("[123456] 2020-07-07 Test User", result);
+            Assert.False(result.EndsWith(" ") || result.EndsWith("."), "Result should not end with space or dot");
+        }
     }
 }

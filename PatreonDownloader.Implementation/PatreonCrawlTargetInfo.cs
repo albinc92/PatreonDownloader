@@ -25,10 +25,19 @@ namespace PatreonDownloader.Implementation
             {
                 _name = value;
                 _saveDirectory = _name;
+                
+                // Replace invalid filename characters
                 foreach (char c in InvalidFilenameCharacters)
                 {
                     _saveDirectory = _saveDirectory.Replace(c, '_');
                 }
+                
+                // Trim trailing spaces and dots (Windows doesn't allow these)
+                _saveDirectory = _saveDirectory.TrimEnd(' ', '.');
+                
+                // Handle edge case where sanitization results in empty string
+                if (string.IsNullOrEmpty(_saveDirectory))
+                    _saveDirectory = "Unknown";
             }
         }
 
