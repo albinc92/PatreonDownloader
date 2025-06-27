@@ -33,6 +33,18 @@ class Program
         string sanitized3 = PathSanitizer.SanitizePath("...");
         Console.WriteLine($"PathSanitizer: '...' -> '{sanitized3}'");
         
+        // Test Windows reserved names
+        string sanitized4 = PathSanitizer.SanitizePath("CON");
+        Console.WriteLine($"PathSanitizer: 'CON' -> '{sanitized4}'");
+        
+        // Test complex invalid characters
+        string sanitized5 = PathSanitizer.SanitizePath("Test<>User|Name? ");
+        Console.WriteLine($"PathSanitizer: 'Test<>User|Name? ' -> '{sanitized5}'");
+        
+        // Test control characters
+        string sanitized6 = PathSanitizer.SanitizePath("Test\x01\x02Name");
+        Console.WriteLine($"PathSanitizer: 'Test\\x01\\x02Name' -> '{sanitized6}'");
+        
         Console.WriteLine("Tests completed!");
     }
 }

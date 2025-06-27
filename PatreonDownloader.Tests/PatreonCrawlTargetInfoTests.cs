@@ -61,5 +61,32 @@ namespace PatreonDownloader.Tests
 
             Assert.Equal("Normal User Name", targetInfo.SaveDirectory);
         }
+
+        [Fact]
+        public void Name_SetWithWindowsReservedName_SaveDirectoryIsPrefixed()
+        {
+            var targetInfo = new PatreonCrawlTargetInfo();
+            targetInfo.Name = "CON";
+
+            Assert.Equal("_CON", targetInfo.SaveDirectory);
+        }
+
+        [Fact]
+        public void Name_SetWithControlCharacters_ControlCharsAreReplaced()
+        {
+            var targetInfo = new PatreonCrawlTargetInfo();
+            targetInfo.Name = "Test\x01\x02User";
+
+            Assert.Equal("Test__User", targetInfo.SaveDirectory);
+        }
+
+        [Fact]
+        public void Name_SetWithComplexInvalidChars_FullySanitized()
+        {
+            var targetInfo = new PatreonCrawlTargetInfo();
+            targetInfo.Name = "COM1<>Test|User? ";
+
+            Assert.Equal("_COM1__Test_User_", targetInfo.SaveDirectory);
+        }
     }
 }
